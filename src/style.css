@@ -1,0 +1,32 @@
+body {
+  background-color: black;
+  --square-dimension: 45px;
+  display: flex;
+  align-items: center;
+  height: 90vh;
+  justify-content: center;
+}
+
+.big-square,
+.small-sqaure {
+  background-color: white;
+}
+
+#sudoku-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  width: min-content;
+}
+
+.big-square {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  width: min-content;
+  border: 2px solid black;
+}
+
+.small-sqaure {
+  height: var(--square-dimension);
+  width: var(--square-dimension);
+  border: 1px solid black;
+}

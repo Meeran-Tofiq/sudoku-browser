@@ -1,13 +1,17 @@
 class SudokuBoard {
-  board: number[][];
-  private completedBoard: number[][];
+  board!: number[][];
+  private completedBoard!: number[][];
 
   constructor() {
-    this.completedBoard = this.generateCompletedBoard();
+    this.createNewBoard();
+  }
+
+  createNewBoard() {
     this.board = this.generateNewBoard();
   }
 
-  generateNewBoard(): number[][] {
+  private generateNewBoard(): number[][] {
+    this.completedBoard = this.generateCompletedBoard();
     return this.completedBoard;
   }
 
@@ -107,3 +111,5 @@ function shuffle<T>(array: T[], startIndex: number = 0): T[] {
 function pickRandom<T>(array: T[]): T {
   return array[Math.floor(Math.random() * array.length)];
 }
+
+export default SudokuBoard;

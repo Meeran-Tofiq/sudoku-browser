@@ -9,15 +9,25 @@ body {
   font-family: Arial, Helvetica, Verdana, sans-serif;
 }
 
-.big-square,
-.small-square {
-  background-color: white;
+main {
+  display: flex;
 }
 
 #sudoku-grid {
+  flex: 3;
+
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   width: min-content;
+}
+
+#game-controls {
+  flex: 1;
+}
+
+.big-square,
+.small-square {
+  background-color: white;
 }
 
 .big-square {

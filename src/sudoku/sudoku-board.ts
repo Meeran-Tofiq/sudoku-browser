@@ -1,18 +1,20 @@
+import type { DifficultyLevel } from "./difficulty-levels";
+import { shuffle, pickRandom } from "../utils/random";
+
+export type Cell = number | null;
+
 class SudokuBoard {
-  board!: number[][];
+  private board!: Cell[][];
   private completedBoard!: number[][];
 
-  constructor() {
-    this.createNewBoard();
-  }
-
-  createNewBoard() {
-    this.board = this.generateNewBoard();
-  }
-
-  private generateNewBoard(): number[][] {
+  createNewBoard(difficulty: DifficultyLevel) {
     this.completedBoard = this.generateCompletedBoard();
-    return this.completedBoard;
+    this.board = [...this.completedBoard];
+
+    for (let i = 0; i < difficulty; i++) {
+      let randomRow = pickRandom(this.board);
+      randomRow[Math.floor(Math.random() * randomRow.length)] = null;
+    }
   }
 
   // It should generate the first row, then for every cell afterwards,
@@ -51,16 +53,16 @@ class SudokuBoard {
     return completed;
   }
 
-  getRow(row: number, board: number[][] = this.board): number[] {
+  getRow(row: number, board: Cell[][] = this.board): Cell[] {
     if (row > 8 || row < 0) return Array(9).fill(0);
 
     return board[row];
   }
 
-  getCol(col: number, board: number[][] = this.board): number[] {
+  getCol(col: number, board: Cell[][] = this.board): Cell[] {
     if (col > 8 || col < 0) return Array(9).fill(0);
 
-    let column: number[] = Array(9);
+    let column: Cell[] = Array(9);
     for (let i = 0; i < 9; i++) {
       column[i] = board[i][col];
     }
@@ -68,8 +70,8 @@ class SudokuBoard {
     return column;
   }
 
-  getSquare(x: number, y: number, board: number[][] = this.board): number[] {
-    let square: number[] = Array(9);
+  getSquare(x: number, y: number, board: Cell[][] = this.board): Cell[] {
+    let square: Cell[] = Array(9);
 
     let squareRow = Math.floor(x / 3);
     let squareCol = Math.floor(y / 3);
@@ -82,34 +84,10 @@ class SudokuBoard {
 
     return square;
   }
-}
 
-function shuffle<T>(array: T[], startIndex: number = 0): T[] {
-  const result = [...array];
-
-  if (startIndex < 0 || startIndex >= result.length) {
-    return result;
+  getBoard(): Cell[][] {
+    return [...this.board];
   }
-
-  let currentIndex = result.length;
-
-  while (currentIndex > startIndex + 1) {
-    const randomIndex =
-      startIndex + Math.floor(Math.random() * (currentIndex - startIndex));
-
-    currentIndex--;
-
-    [result[currentIndex], result[randomIndex]] = [
-      result[randomIndex],
-      result[currentIndex],
-    ];
-  }
-
-  return result;
-}
-
-function pickRandom<T>(array: T[]): T {
-  return array[Math.floor(Math.random() * array.length)];
 }
 
 export default SudokuBoard;

@@ -1,20 +1,34 @@
-import { DifficultyLevel } from "../sudoku/difficulty-levels";
+import {
+  DIFFICULTY_METADATA,
+  DifficultyLevel,
+} from "../sudoku/difficulty-levels";
 
 export interface GameControlCallbacks {
   onNewGame: (difficulty: DifficultyLevel) => void;
 }
 
 export function setupGameControls(callbacks: GameControlCallbacks) {
-  // TODO: Create and append buttons for Easy, Medium, Hard
-  // TODO: Wire up click handlers that call callbacks.onNewGame(difficulty)
+  const container = document.getElementById("game-controls");
+  if (!container) return;
 
-  // Example structure:
-  // const easyButton = document.createElement("button");
-  // easyButton.textContent = "Easy";
-  // easyButton.addEventListener("click", () => {
-  //   callbacks.onNewGame(DifficultyLevel.Easy);
-  // });
-  // document.body.append(easyButton);
+  DIFFICULTY_METADATA.forEach(({ level, label }) => {
+    const button = createDifficultyButton(callbacks, level, label);
+    container.append(button);
+  });
+}
 
-  // Repeat for Medium and Hard buttons
+function createDifficultyButton(
+  callbacks: GameControlCallbacks,
+  difficulty: DifficultyLevel,
+  label: string,
+): HTMLButtonElement {
+  const button = document.createElement("button");
+  button.textContent = label;
+  button.classList.add("difficulty-button");
+
+  button.addEventListener("click", () => {
+    callbacks.onNewGame(difficulty);
+  });
+
+  return button;
 }

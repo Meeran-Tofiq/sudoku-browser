@@ -4,17 +4,20 @@ import { shuffle, pickRandom } from "../utils/random";
 export type Cell = number | null;
 
 class SudokuBoard {
-  private board!: Cell[][];
+  private initialBoard!: Cell[][];
   private completedBoard!: number[][];
+  private board!: Cell[][];
 
   createNewBoard(difficulty: DifficultyLevel) {
     this.completedBoard = this.generateCompletedBoard();
-    this.board = [...this.completedBoard];
 
+    this.initialBoard = [...this.completedBoard];
     for (let i = 0; i < difficulty; i++) {
-      let randomRow = pickRandom(this.board);
+      let randomRow = pickRandom(this.initialBoard);
       randomRow[Math.floor(Math.random() * randomRow.length)] = null;
     }
+
+    this.board = [...this.initialBoard];
   }
 
   // It should generate the first row, then for every cell afterwards,
@@ -53,13 +56,13 @@ class SudokuBoard {
     return completed;
   }
 
-  getRow(row: number, board: Cell[][] = this.board): Cell[] {
+  getRow(row: number, board: Cell[][] = this.initialBoard): Cell[] {
     if (row > 8 || row < 0) return Array(9).fill(0);
 
     return board[row];
   }
 
-  getCol(col: number, board: Cell[][] = this.board): Cell[] {
+  getCol(col: number, board: Cell[][] = this.initialBoard): Cell[] {
     if (col > 8 || col < 0) return Array(9).fill(0);
 
     let column: Cell[] = Array(9);
@@ -70,7 +73,7 @@ class SudokuBoard {
     return column;
   }
 
-  getSquare(x: number, y: number, board: Cell[][] = this.board): Cell[] {
+  getSquare(x: number, y: number, board: Cell[][] = this.initialBoard): Cell[] {
     let square: Cell[] = Array(9);
 
     let squareRow = Math.floor(x / 3);
@@ -85,8 +88,31 @@ class SudokuBoard {
     return square;
   }
 
+  getInitialBoard(): Cell[][] {
+    return [...this.initialBoard];
+  }
+
   getBoard(): Cell[][] {
     return [...this.board];
+  }
+
+  handleNumberInput(row: number, col: number, value: number) {
+    if (row > 8 || row < 0) return;
+    if (col > 8 || col < 0) return;
+    if (value > 9 || value < 1) return;
+
+    this.board[row][col] = value;
+  }
+
+  handleClearCell(row: number, col: number) {
+    if (row > 8 || row < 0) return;
+    if (col > 8 || col < 0) return;
+
+    this.board[row][col] = null;
+  }
+
+  handleClearBoard() {
+    this.board = [...this.initialBoard];
   }
 }
 

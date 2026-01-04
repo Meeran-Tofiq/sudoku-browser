@@ -28,7 +28,9 @@ export default class GameController {
   private setupKeyboardInput() {
     document.addEventListener("keydown", (event) => {
       // Handle arrow key navigation
-      if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(event.key)) {
+      if (
+        ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(event.key)
+      ) {
         event.preventDefault(); // Prevent page scrolling
         this.handleArrowKey(event.key);
         return;
@@ -47,7 +49,7 @@ export default class GameController {
 
   private setupNewGame(difficulty: DifficultyLevel) {
     this.sudokuBoard.createNewBoard(difficulty);
-    let board = this.sudokuBoard.getBoard();
+    let board = this.sudokuBoard.getInitialBoard();
 
     this.preFilled.clear();
     for (let row = 0; row < 9; row++) {
@@ -78,11 +80,11 @@ export default class GameController {
       return;
     }
 
-    this.gridRenderer.setUserInput(
-      this.selectedCell.row,
-      this.selectedCell.col,
-      num,
-    );
+    // Update internal board state
+    this.sudokuBoard.handleNumberInput(row, col, num);
+
+    // Update visual representation
+    this.gridRenderer.setUserInput(row, col, num);
   }
 
   private handleClearCell() {
@@ -96,6 +98,10 @@ export default class GameController {
       return; // Can't clear pre-filled
     }
 
+    // Update internal board state
+    this.sudokuBoard.handleClearCell(row, col);
+
+    // Update visual representation
     this.gridRenderer.clearCell(row, col);
   }
 
@@ -110,6 +116,7 @@ export default class GameController {
       }
     }
     this.selectedCell = null;
+    this.sudokuBoard.handleClearBoard();
   }
 
   private handleArrowKey(key: string) {

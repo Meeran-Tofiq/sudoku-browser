@@ -8,6 +8,7 @@ export default class GameController {
   private gridRenderer: GridRenderer;
   private selectedCell: { row: number; col: number } | null = null;
   private preFilled: Set<string> = new Set();
+  private hasWon: boolean = false;
 
   constructor(gridContainer: Element) {
     this.sudokuBoard = new SudokuBoard();
@@ -62,6 +63,7 @@ export default class GameController {
 
     this.gridRenderer.render(board);
     this.selectedCell = null;
+    this.hasWon = false;
   }
 
   private handleCellClick(row: number, col: number) {
@@ -71,6 +73,7 @@ export default class GameController {
 
   private handleNumberInput(num: number) {
     if (!this.selectedCell) return;
+    if (this.hasWon) return;
 
     const { row, col } = this.selectedCell;
     const cellKey = `${row}-${col}`;
@@ -81,10 +84,13 @@ export default class GameController {
     }
 
     // Update internal board state
-    this.sudokuBoard.handleNumberInput(row, col, num);
+    const changed: boolean = this.sudokuBoard.handleNumberInput(row, col, num);
 
     // Update visual representation
     this.gridRenderer.setUserInput(row, col, num);
+
+    // Check win condition
+    this.handleWin(changed);
   }
 
   private handleClearCell() {
@@ -146,5 +152,10 @@ export default class GameController {
 
     this.selectedCell = { row, col };
     this.gridRenderer.selectCell(row, col);
+  }
+
+  private handleWin(changed: boolean) {
+    if (!changed) return;
+    this.hasWon = this.sudokuBoard.checkWinCondition();
   }
 }

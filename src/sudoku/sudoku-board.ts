@@ -10,7 +10,6 @@ class SudokuBoard {
 
   createNewBoard(difficulty: DifficultyLevel) {
     this.completedBoard = this.generateCompletedBoard();
-    console.log(this.completedBoard);
 
     this.initialBoard = structuredClone(this.completedBoard);
     for (let i = 0; i < difficulty; i++) {
@@ -97,12 +96,14 @@ class SudokuBoard {
     return [...this.board];
   }
 
-  handleNumberInput(row: number, col: number, value: number) {
-    if (row > 8 || row < 0) return;
-    if (col > 8 || col < 0) return;
-    if (value > 9 || value < 1) return;
+  handleNumberInput(row: number, col: number, value: number): boolean {
+    if (row > 8 || row < 0) return false;
+    if (col > 8 || col < 0) return false;
+    if (value > 9 || value < 1) return false;
+    if (this.board[row][col] === value) return false;
 
     this.board[row][col] = value;
+    return true;
   }
 
   handleClearCell(row: number, col: number) {
@@ -116,12 +117,14 @@ class SudokuBoard {
     this.board = [...this.initialBoard];
   }
 
-  checkWinCondition(): Boolean {
+  checkWinCondition(): boolean {
     for (let row = 0; row < this.board.length; row++) {
-      console.log(this.board[row]);
-      console.log(this.completedBoard[row]);
+      for (let col = 0; col < 9; col++) {
+        if (this.board[row][col] !== this.completedBoard[row][col])
+          return false;
+      }
     }
-    return this.board === this.completedBoard;
+    return true;
   }
 }
 

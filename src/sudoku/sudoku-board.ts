@@ -10,14 +10,15 @@ class SudokuBoard {
 
   createNewBoard(difficulty: DifficultyLevel) {
     this.completedBoard = this.generateCompletedBoard();
+    console.log(this.completedBoard);
 
-    this.initialBoard = [...this.completedBoard];
+    this.initialBoard = structuredClone(this.completedBoard);
     for (let i = 0; i < difficulty; i++) {
       let randomRow = pickRandom(this.initialBoard);
       randomRow[Math.floor(Math.random() * randomRow.length)] = null;
     }
 
-    this.board = [...this.initialBoard];
+    this.board = structuredClone(this.initialBoard);
   }
 
   // It should generate the first row, then for every cell afterwards,
@@ -113,6 +114,14 @@ class SudokuBoard {
 
   handleClearBoard() {
     this.board = [...this.initialBoard];
+  }
+
+  checkWinCondition(): Boolean {
+    for (let row = 0; row < this.board.length; row++) {
+      console.log(this.board[row]);
+      console.log(this.completedBoard[row]);
+    }
+    return this.board === this.completedBoard;
   }
 }
 

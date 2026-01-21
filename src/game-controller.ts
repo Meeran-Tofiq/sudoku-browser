@@ -2,10 +2,12 @@ import type { DifficultyLevel } from "./sudoku/difficulty-levels";
 import SudokuBoard from "./sudoku/sudoku-board";
 import { setupGameControls } from "./ui/game-controls";
 import { GridRenderer } from "./ui/grid-renderer";
+import { WinBanner } from "./ui/win-banner";
 
 export default class GameController {
   private sudokuBoard: SudokuBoard;
   private gridRenderer: GridRenderer;
+  private winBanner: WinBanner;
   private selectedCell: { row: number; col: number } | null = null;
   private preFilled: Set<string> = new Set();
   private hasWon: boolean = false;
@@ -15,6 +17,7 @@ export default class GameController {
     this.gridRenderer = new GridRenderer(gridContainer, {
       onCellClick: (row, col) => this.handleCellClick(row, col),
     });
+    this.winBanner = new WinBanner();
     this.setupControls();
     this.setupKeyboardInput();
   }
@@ -157,5 +160,8 @@ export default class GameController {
   private handleWin(changed: boolean) {
     if (!changed) return;
     this.hasWon = this.sudokuBoard.checkWinCondition();
+    if (this.hasWon) {
+      this.winBanner.show();
+    }
   }
 }

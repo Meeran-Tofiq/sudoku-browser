@@ -114,3 +114,94 @@ main {
 .difficulty-button:hover {
   background-color: #45a049;
 }
+
+/* Win Banner */
+.win-banner {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.win-banner.hidden {
+  display: none;
+}
+
+.win-content {
+  background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+  padding: 50px 70px;
+  border-radius: 16px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: bannerExpand 0.4s ease-out;
+  position: relative;
+  z-index: 101;
+}
+
+@keyframes bannerExpand {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.win-content h1 {
+  margin: 0 0 10px 0;
+  font-size: 3rem;
+  color: #4caf50;
+  animation: titlePulse 1s ease-in-out infinite alternate;
+}
+
+@keyframes titlePulse {
+  0% {
+    transform: scale(1);
+    text-shadow: 0 0 10px rgba(76, 175, 80, 0.3);
+  }
+  100% {
+    transform: scale(1.05);
+    text-shadow: 0 0 20px rgba(76, 175, 80, 0.6);
+  }
+}
+
+.win-content p {
+  margin: 0 0 25px 0;
+  color: #666;
+  font-size: 1.1rem;
+}
+
+/* Confetti */
+#confetti-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 100;
+}
+
+.confetti {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  top: -10px;
+  animation: confettiFall linear forwards;
+}
+
+@keyframes confettiFall {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(720deg);
+    opacity: 0;
+  }
+}

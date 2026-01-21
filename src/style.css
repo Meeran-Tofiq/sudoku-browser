@@ -11,7 +11,7 @@ body {
 
 main {
   display: flex;
-  gap: 10;
+  gap: 30px;
 }
 
 #sudoku-grid {
@@ -50,18 +50,68 @@ main {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2.5rem;
+  font-size: 1.5rem;
+
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.15s ease;
 }
 
-.difficulty-button {
-  padding: 10px 20px;
-  margin: 10px;
+.small-square:hover {
+  background-color: #f0f0f0;
+}
+
+.small-square.selected {
+  background-color: #bbdefb;
+  outline: 3px solid #2196f3;
+  outline-offset: -3px;
+  z-index: 1;
+  position: relative;
+}
+
+.small-square.pre-filled {
+  font-weight: bold;
+  color: #000000;
+  background-color: #fafafa;
+}
+
+.small-square.user-input {
+  color: #2196f3;
+  font-weight: normal;
+}
+
+/* Base styling for all control buttons */
+.controls {
+  padding: 12px 24px;
+  margin: 8px;
   font-size: 1rem;
   cursor: pointer;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+
+  /* Default styling for non-difficulty buttons (like Reset) */
+  background-color: #f44336;
+  color: white;
+}
+
+.controls:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  filter: brightness(1.1);
+}
+
+.controls:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Difficulty button specific styling */
+.difficulty-button {
   background-color: #4caf50;
   color: white;
-  border: none;
-  border-radius: 4px;
 }
 
 .difficulty-button:hover {

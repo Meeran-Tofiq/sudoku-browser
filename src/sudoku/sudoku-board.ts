@@ -1,7 +1,20 @@
 import type { DifficultyLevel } from "./difficulty-levels";
-import { shuffle, pickRandom } from "../utils/random";
+import { pickRandom } from "../utils/random";
 
 export type Cell = number | null;
+
+// A valid completed Sudoku board used as the seed for generation
+const SEED_BOARD: number[][] = [
+  [1, 2, 3, 4, 5, 6, 7, 8, 9],
+  [4, 5, 6, 7, 8, 9, 1, 2, 3],
+  [7, 8, 9, 1, 2, 3, 4, 5, 6],
+  [2, 3, 4, 5, 6, 7, 8, 9, 1],
+  [5, 6, 7, 8, 9, 1, 2, 3, 4],
+  [8, 9, 1, 2, 3, 4, 5, 6, 7],
+  [3, 4, 5, 6, 7, 8, 9, 1, 2],
+  [6, 7, 8, 9, 1, 2, 3, 4, 5],
+  [9, 1, 2, 3, 4, 5, 6, 7, 8],
+];
 
 class SudokuBoard {
   private initialBoard!: Cell[][];
@@ -20,40 +33,100 @@ class SudokuBoard {
     this.board = structuredClone(this.initialBoard);
   }
 
-  // It should generate the first row, then for every cell afterwards,
-  // generate a number by removing those in the current square+column+row
-  // from the list of possible numbers
   private generateCompletedBoard(): number[][] {
-    let completed: number[][] = new Array(9).fill(undefined);
-    completed.forEach((_, i) => {
-      completed[i] = new Array(9);
-    });
+    let board = structuredClone(SEED_BOARD);
 
-    // first, generate first row randomly
-    const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-    completed[0] = shuffle(numbers);
-
-    for (let row = 1; row < 9; row++) {
-      for (let col = 0; col < 9; col++) {
-        let r = this.getRow(row, completed);
-        let c = this.getCol(col, completed);
-        let s = this.getSquare(row, col, completed);
-        const excluded = [...r, ...c, ...s];
-
-        const availableNums: number[] = numbers.filter(
-          (n) => !excluded.includes(n),
-        );
-        if (availableNums.length === 0) {
-          col = -1;
-          completed[row] = Array(9);
-          continue;
-        }
-
-        completed[row][col] = pickRandom(availableNums);
+    // Apply random transformations to create a unique board
+    const numShuffles = 20;
+    for (let i = 0; i < numShuffles; i++) {
+      const operation = Math.floor(Math.random() * 5);
+      switch (operation) {
+        case 0:
+          board = this.swapRowsInBand(board);
+          break;
+        case 1:
+          board = this.swapColsInBand(board);
+          break;
+        case 2:
+          board = this.swapRowBands(board);
+          break;
+        case 3:
+          board = this.swapColBands(board);
+          break;
+        case 4:
+          board = this.swapNumbers(board);
+          break;
       }
     }
 
-    return completed;
+    return board;
+  }
+
+  // Swap two random rows within the same 3-row band
+  private swapRowsInBand(board: number[][]): number[][] {
+    const band = Math.floor(Math.random() * 3); // 0, 1, or 2
+    const row1 = band * 3 + Math.floor(Math.random() * 3);
+    let row2 = band * 3 + Math.floor(Math.random() * 3);
+    while (row2 === row1) row2 = band * 3 + Math.floor(Math.random() * 3);
+
+    [board[row1], board[row2]] = [board[row2], board[row1]];
+    return board;
+  }
+
+  // Swap two random columns within the same 3-column band
+  private swapColsInBand(board: number[][]): number[][] {
+    const band = Math.floor(Math.random() * 3);
+    const col1 = band * 3 + Math.floor(Math.random() * 3);
+    let col2 = band * 3 + Math.floor(Math.random() * 3);
+    while (col2 === col1) col2 = band * 3 + Math.floor(Math.random() * 3);
+
+    for (let row = 0; row < 9; row++) {
+      [board[row][col1], board[row][col2]] = [board[row][col2], board[row][col1]];
+    }
+    return board;
+  }
+
+  // Swap two entire 3-row bands
+  private swapRowBands(board: number[][]): number[][] {
+    const band1 = Math.floor(Math.random() * 3);
+    let band2 = Math.floor(Math.random() * 3);
+    while (band2 === band1) band2 = Math.floor(Math.random() * 3);
+
+    for (let i = 0; i < 3; i++) {
+      [board[band1 * 3 + i], board[band2 * 3 + i]] =
+        [board[band2 * 3 + i], board[band1 * 3 + i]];
+    }
+    return board;
+  }
+
+  // Swap two entire 3-column bands
+  private swapColBands(board: number[][]): number[][] {
+    const band1 = Math.floor(Math.random() * 3);
+    let band2 = Math.floor(Math.random() * 3);
+    while (band2 === band1) band2 = Math.floor(Math.random() * 3);
+
+    for (let row = 0; row < 9; row++) {
+      for (let i = 0; i < 3; i++) {
+        [board[row][band1 * 3 + i], board[row][band2 * 3 + i]] =
+          [board[row][band2 * 3 + i], board[row][band1 * 3 + i]];
+      }
+    }
+    return board;
+  }
+
+  // Swap all occurrences of two numbers
+  private swapNumbers(board: number[][]): number[][] {
+    const num1 = Math.floor(Math.random() * 9) + 1;
+    let num2 = Math.floor(Math.random() * 9) + 1;
+    while (num2 === num1) num2 = Math.floor(Math.random() * 9) + 1;
+
+    for (let row = 0; row < 9; row++) {
+      for (let col = 0; col < 9; col++) {
+        if (board[row][col] === num1) board[row][col] = num2;
+        else if (board[row][col] === num2) board[row][col] = num1;
+      }
+    }
+    return board;
   }
 
   getRow(row: number, board: Cell[][] = this.initialBoard): Cell[] {

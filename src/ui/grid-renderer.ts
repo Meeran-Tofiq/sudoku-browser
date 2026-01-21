@@ -71,6 +71,25 @@ export class GridRenderer {
     }
   }
 
+  highlightNumber(num: number) {
+    const highlightClass = "highlight";
+    Array.from(document.querySelectorAll(`.${highlightClass}`)).forEach(
+      (element) => element.classList.remove(highlightClass),
+    );
+
+    for (let row = 0; row < 9; row++) {
+      for (let col = 0; col < 9; col++) {
+        const cell = document.getElementById(`${row + 1}-${col + 1}`);
+        if (!cell) continue;
+
+        const value = parseInt(cell.textContent);
+        if (value !== num) continue;
+
+        cell.classList.add(highlightClass);
+      }
+    }
+  }
+
   selectCell(row: number, col: number) {
     if (this.selectedCell) {
       const prevCell = document.getElementById(
@@ -81,7 +100,9 @@ export class GridRenderer {
 
     this.selectedCell = { row, col };
     const cell = document.getElementById(`${row + 1}-${col + 1}`);
-    cell?.classList.add("selected");
+    if (!cell) return;
+    cell.classList.add("selected");
+    this.highlightNumber(parseInt(cell.textContent));
   }
 
   setUserInput(row: number, col: number, value: number) {
@@ -91,6 +112,7 @@ export class GridRenderer {
     cell.textContent = value.toString();
     cell.classList.add("user-input");
     cell?.classList.remove("pre-filled");
+    this.highlightNumber(value);
   }
 
   clearCell(row: number, col: number) {

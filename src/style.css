@@ -57,22 +57,19 @@ main {
   transition: background-color 0.15s ease;
 }
 
-.small-square:hover {
-  background-color: #f0f0f0;
+.small-square.pre-filled {
+  font-weight: bold;
+  color: #000000;
+  background-color: #fafafa;
 }
 
-.small-square.selected {
+.small-square.selected,
+.small-square.highlight {
   background-color: #bbdefb;
   outline: 3px solid #2196f3;
   outline-offset: -3px;
   z-index: 1;
   position: relative;
-}
-
-.small-square.pre-filled {
-  font-weight: bold;
-  color: #000000;
-  background-color: #fafafa;
 }
 
 .small-square.user-input {
